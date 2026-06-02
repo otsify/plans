@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrintService — Planes y precios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #f8fafc;
+      --surface:  #ffffff;
+      --border:   #e2e8f0;
+      --text:     #1e293b;
+      --muted:    #64748b;
+      --accent:   #2563eb;
+      --accent-h: #1d4ed8;
+      --green:    #16a34a;
+      --radius:   14px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--text); font-weight: 300; }
+
+    .hero {
+      text-align: center;
+      padding: 64px 24px 48px;
+    }
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .hero p {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+
+    .toggle-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+    .toggle-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .toggle-label.active { color: var(--text); }
+    .toggle {
+      position: relative;
+      width: 48px;
+      height: 26px;
+      background: var(--accent);
+      border-radius: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: none;
+      outline: none;
+    }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle.usd::after { transform: translateX(22px); }
+
+    .planes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .plan {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .plan:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+    .plan.destacado {
+      border: 2px solid var(--accent);
+      position: relative;
+    }
+    .badge-recomendado {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .plan-icono { font-size: 32px; margin-bottom: 12px; }
+    .plan-nombre {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .plan-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .plan-precio { margin-bottom: 24px; }
+    .precio-principal {
+      font-size: 38px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+    .precio-periodo {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .precio-referencia {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .plan-features {
+      list-style: none;
+      flex: 1;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .plan-features li {
+      font-size: 14px;
+      color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.4;
+    }
+    .plan-features li::before {
+      content: '✓';
+      color: var(--green);
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 13px 20px;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-outline  { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+    .btn-ghost    { background: #f1f5f9; color: var(--muted); cursor: default; }
+    .btn-ghost:hover { opacity: 1; transform: none; }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      .planes { grid-template-columns: 1fr; }
+      .hero { padding: 48px 20px 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">Print<span>Service</span></div>
+  </header>
+
+  <section class="hero">
+    <h1>Planes y precios</h1>
+    <p>Comenzá gratis. Crecé a tu ritmo.</p>
+    <div class="toggle-wrapper">
+      <span class="toggle-label active" id="label-ars">ARS</span>
+      <button class="toggle" id="toggle-moneda" onclick="cambiarMoneda()" aria-label="Cambiar moneda"></button>
+      <span class="toggle-label" id="label-usd">USD</span>
+    </div>
+  </section>
+
+  <div class="planes">
+
+    <!-- FREE -->
+    <div class="plan">
+      <div class="plan-icono">🌱</div>
+      <div class="plan-nombre">Free</div>
+      <div class="plan-desc">Para empezar sin compromiso.</div>
+      <div class="plan-precio">
+        <div class="precio-principal">$0</div>
+        <div class="precio-periodo">por mes, para siempre</div>
+      </div>
+      <ul class="plan-features">
+        <li>12 trabajos por mes</li>
+        <li>3 entregas express por mes</li>
+        <li>Registro de entrega incluido</li>
+        <li>Validación de documento incluida</li>
+      </ul>
+      <span class="btn btn-ghost">Plan actual</span>
+    </div>
+
+    <!-- PRO -->
+    <div class="plan destacado">
+      <div class="badge-recomendado">⭐ Recomendado</div>
+      <div class="plan-icono">🚀</div>
+      <div class="plan-nombre">Pro</div>
+      <div class="plan-desc">Para uso profesional sin límites ni interrupciones.</div>
+      <div class="plan-precio">
+        <div class="precio-principal" id="precio-pro">$999</div>
+        <div class="precio-periodo" id="periodo-pro">ARS · acceso por 30 días</div>
+        <div class="precio-referencia" id="referencia-pro">≈ USD 0,99</div>
+      </div>
+      <ul class="plan-features">
+        <li>Trabajos ilimitados</li>
+        <li>Entregas express ilimitadas</li>
+        <li>Registro de entrega incluido</li>
+        <li>Validación de documento incluida</li>
+        <li>Soporte prioritario</li>
+      </ul>
+      <a href="#" class="btn btn-primary" id="btn-pro">Suscribirme</a>
+    </div>
+
+    <!-- EMPRESAS -->
+    <div class="plan">
+      <div class="plan-icono">🏢</div>
+      <div class="plan-nombre">Empresas</div>
+      <div class="plan-desc">Para equipos y organizaciones que necesitan escala.</div>
+      <div class="plan-precio">
+        <div class="precio-principal" style="font-size:26px; letter-spacing:0;">A consultar</div>
+        <div class="precio-periodo">precio según volumen y necesidades</div>
+      </div>
+      <ul class="plan-features">
+        <li>Todo lo del plan Pro</li>
+        <li>Múltiples operadores</li>
+        <li>Facturación corporativa</li>
+        <li>Implementación a medida</li>
+      </ul>
+      <a href="mailto:danielvazquez1965@gmail.com?subject=Consulta%20Plan%20Empresas%20PrintService&body=Hola%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20el%20plan%20Empresas%20de%20PrintService." class="btn btn-outline">Consultar</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>¿Preguntas? <a href="mailto:danielvazquez1965@gmail.com">Escribinos</a></p>
+    <p style="margin-top:8px;">© 2026 PrintService</p>
+  </footer>
+
+  <script>
+    let monedaUSD = false;
+
+    // Reemplazá estos links cuando crees la cuenta de MercadoPago
+    const LINK_PRO_ARS = '#';
+    const LINK_PRO_USD = '#';
+
+    function cambiarMoneda() {
+      monedaUSD = !monedaUSD;
+      const toggle      = document.getElementById('toggle-moneda');
+      const labelARS    = document.getElementById('label-ars');
+      const labelUSD    = document.getElementById('label-usd');
+      const precioEl    = document.getElementById('precio-pro');
+      const periodoEl   = document.getElementById('periodo-pro');
+      const referenciaEl= document.getElementById('referencia-pro');
+      const btnPro      = document.getElementById('btn-pro');
+
+      if (monedaUSD) {
+        toggle.classList.add('usd');
+        labelARS.classList.remove('active');
+        labelUSD.classList.add('active');
+        precioEl.textContent     = 'USD 0,99';
+        periodoEl.textContent    = 'USD · acceso por 30 días';
+        referenciaEl.textContent = '≈ ARS 999';
+        btnPro.href = LINK_PRO_USD;
+      } else {
+        toggle.classList.remove('usd');
+        labelARS.classList.add('active');
+        labelUSD.classList.remove('active');
+        precioEl.textContent     = '$999';
+        periodoEl.textContent    = 'ARS · acceso por 30 días';
+        referenciaEl.textContent = '≈ USD 0,99';
+        btnPro.href = LINK_PRO_ARS;
+      }
+    }
+  </script>
+
+</body>
+</html>
