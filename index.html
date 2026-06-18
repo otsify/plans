@@ -16,6 +16,9 @@
       --muted:   #64748b;
       --accent:  #2563eb;
       --green:   #16a34a;
+      --red:     #dc2626;
+      --promo-bg:#fef9ec;
+      --promo-border: #fbbf24;
       --radius:  14px;
     }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
@@ -63,9 +66,65 @@
     .plan-nombre { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
     .plan-desc { font-size: 13px; color: var(--muted); margin-bottom: 18px; line-height: 1.5; }
 
+    /* Bloque de precio con promoción */
     .plan-precio { margin-bottom: 20px; }
-    .precio-principal { font-size: 36px; font-weight: 700; line-height: 1; letter-spacing: -1px; }
+
+    .precio-original {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--muted);
+      text-decoration: line-through;
+      letter-spacing: -0.5px;
+      margin-bottom: 2px;
+    }
+
+    .promo-bloque {
+      background: var(--promo-bg);
+      border: 1px solid var(--promo-border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+    }
+
+    .promo-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #92400e;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+
+    .promo-descuento {
+      font-size: 13px;
+      color: #78350f;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .promo-ahorro {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--red);
+      background: #fee2e2;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .precio-final-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 2px;
+    }
+
+    .precio-principal { font-size: 36px; font-weight: 700; line-height: 1; letter-spacing: -1px; color: var(--green); }
     .precio-periodo { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    /* Precio simple (sin promo) */
+    .precio-simple .precio-principal { color: var(--text); }
 
     .plan-features { list-style: none; flex: 1; margin-bottom: 24px; display: flex; flex-direction: column; gap: 9px; }
     .plan-features li { font-size: 13px; color: var(--text); display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
@@ -118,7 +177,7 @@
       <div class="plan-icono">🌱</div>
       <div class="plan-nombre">Free</div>
       <div class="plan-desc">Para empezar sin compromiso.</div>
-      <div class="plan-precio">
+      <div class="plan-precio precio-simple">
         <div class="precio-principal">$0</div>
         <div class="precio-periodo">por mes, para siempre</div>
       </div>
@@ -137,12 +196,21 @@
       <div class="plan-nombre">Básico</div>
       <div class="plan-desc">Para uso ocasional.</div>
       <div class="plan-precio">
+        <div class="precio-original">$10.000</div>
+        <div class="promo-bloque">
+          <div class="promo-label">🏆 Descuento mes Mundial</div>
+          <div class="promo-descuento">
+            <span>− $9.999</span>
+            <span class="promo-ahorro">−99,99%</span>
+          </div>
+        </div>
+        <div class="precio-final-label">A pagar</div>
         <div class="precio-principal">$1</div>
         <div class="precio-periodo">ARS · acceso por 30 días</div>
       </div>
       <ul class="plan-features">
         <li>2 trabajos por mes</li>
-        <li>1 entregas express por mes</li>
+        <li>1 entrega express por mes</li>
         <li>Registro de entrega incluido</li>
         <li>Validación de documento incluida</li>
       </ul>
@@ -156,6 +224,15 @@
       <div class="plan-nombre">Pro</div>
       <div class="plan-desc">Para uso frecuente con mayor capacidad.</div>
       <div class="plan-precio">
+        <div class="precio-original">$12.000</div>
+        <div class="promo-bloque">
+          <div class="promo-label">🏆 Descuento mes Mundial</div>
+          <div class="promo-descuento">
+            <span>− $11.998</span>
+            <span class="promo-ahorro">−99,98%</span>
+          </div>
+        </div>
+        <div class="precio-final-label">A pagar</div>
         <div class="precio-principal">$2</div>
         <div class="precio-periodo">ARS · acceso por 30 días</div>
       </div>
@@ -173,7 +250,7 @@
       <div class="plan-icono">🏢</div>
       <div class="plan-nombre">Empresas</div>
       <div class="plan-desc">Para equipos y organizaciones que necesitan escala.</div>
-      <div class="plan-precio">
+      <div class="plan-precio precio-simple">
         <div class="precio-principal" style="font-size:22px; letter-spacing:0;">A consultar</div>
         <div class="precio-periodo">precio según volumen y necesidades</div>
       </div>
